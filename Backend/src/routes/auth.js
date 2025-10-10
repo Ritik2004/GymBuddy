@@ -41,10 +41,9 @@ authrouter.post('/login',async(req,res)=>{
 
         //create a jwt token
         const token = jwt.sign({_id:user._id},"jwtsecretkey",{expiresIn:'1d'});
-        console.log(token);
         //add a token to cookie and send response to user
         res.cookie("token",token);
-        res.send("Login successful");
+        res.status(200).send({message:"User logged in successfully",user});
     }
 
     if(!ispwdvalid){

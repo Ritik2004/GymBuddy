@@ -1,22 +1,27 @@
 import React from 'react'
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { addUser } from '../utils/userSlice'
+import { useNavigate } from 'react-router-dom'
+import { BASE_URL } from '../utils/constants'
 const Login = () => {
   const[emailId,setEmailId] = useState('Rahul@gmail.com');
   const[password,setPassword] = useState('Rahul@123');
-
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const handleLogin = async () => {
      try{
-        const res = await fetch('http://localhost:3000/login',{
+        const res = await fetch(BASE_URL+ '/login',{
           method:'POST',
           headers:{
             'Content-Type':'application/json'
           },
           body:JSON.stringify({emailId,password})
+        ,credentials:'include'
         })
-        await res.json();
-        if(res.status===200){
-          alert("Login Successful");
-        }
+       const data = await res.json();
+        dispatch(addUser(data.user));
+        return navigate('/');
      }
      catch(err){
       console.log(err);
