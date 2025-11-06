@@ -3,9 +3,22 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { BASE_URL } from "../utils/constants";
 import { addRequest } from "../utils/requestSlice";
+import { removeRequest } from "../utils/requestSlice";
 const Requests = () => {
   const dispatch = useDispatch();
   const requests = useSelector((store) => store.request);
+
+  const reviewRequest = async (status, _id) => {
+    try {
+      const res = await fetch(BASE_URL + "/request/review/" + status + "/" + _id, {
+        method: "POST",
+        credentials: "include",
+      });
+      dispatch(removeRequest(_id));
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   const getRequests = async () => {
     try {
@@ -51,8 +64,8 @@ const Requests = () => {
               <p>{connection.fromUserId.about}</p>
             </div>
             <div className="card-actions justify-end">
-              <button className="btn btn-primary mx-2">Reject</button>
-              <button className="btn btn-secondary">Accept</button>
+              <button className="btn btn-primary mx-2" onClick={()=>reviewRequest("rejected",connection._id)}>Reject</button>
+              <button className="btn btn-secondary" onClick={()=>reviewRequest("accepted",connection._id)}>Accept</button>
             </div>
           </div>
         );
